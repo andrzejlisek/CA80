@@ -1,11 +1,13 @@
-2
+3
 0000
-F:/__ToBackup/Develop/CA80/ROM/32K/CA80_32K_1.ROM
+ROM/CA80_new_mod.rom
 4000
-F:/__ToBackup/Develop/CA80/ROM/32K/CA80_32K_2.ROM
+ROM/C800.rom
+8000
+ROM/C930.rom
 0
 0
-1
+0
 1
 FFFF
 FFFF
