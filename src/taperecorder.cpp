@@ -12,6 +12,11 @@ TapeRecorder::TapeRecorder()
 
     BufLong = new llong[1];
     BufChar = new uchar[1];
+
+    for (int i = 0; i < OscillatorPeriod; i++)
+    {
+        OscillatorWave[i] = sin(2 * M_PI * (double)i / (double)OscillatorPeriod);
+    }
 }
 
 TapeRecorder::~TapeRecorder()
@@ -26,6 +31,36 @@ void TapeRecorder::SetState(int S)
     {
         if ((WorkState != 5) && (WorkState != 6))
         {
+
+            // Zakonczenie odtwarzania lub nagrywania
+            if (((WorkState == 1) || (WorkState == 2)) && (S != 1) && (S != 2))
+            {
+                while (!TapeAudioBuf.empty())
+                {
+                    TapeAudioBuf.pop();
+                }
+            }
+
+            // Rozpoczecie odtwarzania lub nagrywania
+            if (((S == 1) || (S == 2)) && (WorkState != 1) && (WorkState != 2))
+            {
+                while (!TapeAudioBuf.empty())
+                {
+                    TapeAudioBuf.pop();
+                }
+
+                int I = TapeAudioPrebuffer;
+                while (I > 0)
+                {
+                    TapeAudioBuf.push(0);
+                    I--;
+                }
+                TapeAudioCounterTick = 0;
+                TapeAudioCounterSmp = 0;
+            }
+
+
+
             WorkState = S;
         }
         ExecMutex.unlock();
@@ -36,66 +71,92 @@ void TapeRecorder::Clock()
 {
     switch (WorkState)
     {
-    case 1: // Odtwarzanie
-        if (TapePos < (TapeLen - 1))
-        {
-            if ((TapePos % TapeRes) == 0)
+        case 1: // Odtwarzanie
+            if (TapePos < (TapeLen - 1))
             {
-                LastRead = TapeData[TapePos / TapeRes];
+                if ((TapePos % TapeRes) == 0)
+                {
+                    LastRead = TapeData[TapePos / TapeRes];
+
+                    // Uzyte wartosci stale to:
+                    // 48000 - czestotliwosc probkowania
+                    // 4000000 - czestotliwosc taktowania procesora
+                    // Zera sie skracaja
+                    TapeAudioCounterTick = TapeAudioCounterTick + (48 * TapeRes);
+                    llong TapeAudioCounterSmp_ = TapeAudioCounterTick / 4000;
+
+                    while (TapeAudioCounterSmp < TapeAudioCounterSmp_)
+                    {
+                        TapeAudioBuf.push(LastRead);
+                        TapeAudioCounterSmp++;
+                    }
+                }
+                TapePos++;
             }
-            TapePos++;
-        }
-        else
-        {
-            WorkState = 0;
-        }
-        break;
-    case 2: // Nagrywanie
-        if (TapePos < (TapeLen - 1))
-        {
-            if ((TapePos % TapeRes) == 0)
+            else
             {
-                TapeData[TapePos / TapeRes] = LastWrite;
+                WorkState = 0;
             }
-            TapePos++;
-        }
-        else
-        {
-            WorkState = 0;
-        }
-        break;
-    case 3: // Przewijanie do przodu
-        if (TapePos < (TapeLen - 1))
-        {
-            TapePos += 10;
-            if (TapePos > (TapeLen - 1))
+            break;
+        case 2: // Nagrywanie
+            if (TapePos < (TapeLen - 1))
             {
-                TapePos = (TapeLen - 1);
+                if ((TapePos % TapeRes) == 0)
+                {
+                    TapeData[TapePos / TapeRes] = LastWrite;
+
+                    // Uzyte wartosci stale to:
+                    // 48000 - czestotliwosc probkowania
+                    // 4000000 - czestotliwosc taktowania procesora
+                    // Zera sie skracaja
+                    TapeAudioCounterTick = TapeAudioCounterTick + (48 * TapeRes);
+                    llong TapeAudioCounterSmp_ = TapeAudioCounterTick / 4000;
+
+                    while (TapeAudioCounterSmp < TapeAudioCounterSmp_)
+                    {
+                        TapeAudioBuf.push(LastWrite);
+                        TapeAudioCounterSmp++;
+                    }
+                }
+                TapePos++;
             }
-        }
-        else
-        {
-            WorkState = 0;
-        }
-        break;
-    case 4: // Przewijanie do tylu
-        if (TapePos > 0)
-        {
-            TapePos -= 10;
-            if (TapePos < 0)
+            else
             {
-                TapePos = 0;
+                WorkState = 0;
             }
-        }
-        else
-        {
-            WorkState = 0;
-        }
-        break;
-    case 5: // Odczyt z pliku
-        break;
-    case 6: // Zapis do pliku
-        break;
+            break;
+        case 3: // Przewijanie do przodu
+            if (TapePos < (TapeLen - 1))
+            {
+                TapePos += 10;
+                if (TapePos > (TapeLen - 1))
+                {
+                    TapePos = (TapeLen - 1);
+                }
+            }
+            else
+            {
+                WorkState = 0;
+            }
+            break;
+        case 4: // Przewijanie do tylu
+            if (TapePos > 0)
+            {
+                TapePos -= 10;
+                if (TapePos < 0)
+                {
+                    TapePos = 0;
+                }
+            }
+            else
+            {
+                WorkState = 0;
+            }
+            break;
+        //case 5: // Odczyt z pliku
+        //    break;
+        //case 6: // Zapis do pliku
+        //    break;
     }
 }
 
@@ -289,11 +350,11 @@ string TapeRecorder::GetInfo()
     string InfoS;
     switch (WorkState)
     {
-    case 0: InfoS = ""; break;
-    case 1: InfoS = "<"; break;
-    case 2: InfoS = "(  )"; break;
-    case 3: InfoS = "<<"; break;
-    case 4: InfoS = ">>"; break;
+        case 0: InfoS = ""; break;
+        case 1: InfoS = "<"; break;
+        case 2: InfoS = "(  )"; break;
+        case 3: InfoS = "<<"; break;
+        case 4: InfoS = ">>"; break;
     }
 
     //return InfoP + " / " + InfoL + " (" + to_string(TapeRes) + ")  " + InfoS;
@@ -323,4 +384,27 @@ void TapeRecorder::TapeWrite(bool Val)
 bool TapeRecorder::IsIdle()
 {
     return (WorkState == 0);
+}
+
+int TapeRecorder::GetSample(double Volume)
+{
+    OscillatorCounter++;
+    if (OscillatorCounter >= OscillatorPeriod)
+    {
+        OscillatorCounter = 0;
+    }
+
+    if (!TapeAudioBuf.empty())
+    {
+        if (TapeAudioBuf.front())
+        {
+            TapeAudioBuf.pop();
+            return Volume * OscillatorWave[OscillatorCounter];
+        }
+        else
+        {
+            TapeAudioBuf.pop();
+        }
+    }
+    return 0;
 }

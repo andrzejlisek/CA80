@@ -13,6 +13,8 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    configfile.cpp \
+    ctc.cpp \
         mainwindow.cpp \
     appcore.cpp \
     cpumem.cpp \
@@ -32,7 +34,9 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     appcore.h \
+    configfile.h \
     cpumem.h \
+    ctc.h \
     display.h \
     keyboard.h \
     i8255.h \

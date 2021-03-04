@@ -54,6 +54,7 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../CA80/main.cpp \
 		../CA80/configfile.cpp \
+		../CA80/ctc.cpp \
 		../CA80/mainwindow.cpp \
 		../CA80/appcore.cpp \
 		../CA80/cpumem.cpp \
@@ -75,6 +76,7 @@ SOURCES       = ../CA80/main.cpp \
 		moc_audioplayerthread.cpp
 OBJECTS       = main.o \
 		configfile.o \
+		ctc.o \
 		mainwindow.o \
 		appcore.o \
 		cpumem.o \
@@ -181,6 +183,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../CA80/appcore.h \
 		../CA80/configfile.h \
 		../CA80/cpumem.h \
+		../CA80/ctc.h \
 		../CA80/display.h \
 		../CA80/keyboard.h \
 		../CA80/i8255.h \
@@ -197,6 +200,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../CA80/audioplayerthread.h \
 		../CA80/objmem.h ../CA80/main.cpp \
 		../CA80/configfile.cpp \
+		../CA80/ctc.cpp \
 		../CA80/mainwindow.cpp \
 		../CA80/appcore.cpp \
 		../CA80/cpumem.cpp \
@@ -406,8 +410,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../CA80/mainwindow.h ../CA80/appcore.h ../CA80/configfile.h ../CA80/cpumem.h ../CA80/display.h ../CA80/keyboard.h ../CA80/i8255.h ../CA80/keycapture.h ../CA80/sound.h ../CA80/taperecorder.h ../CA80/extdatetime.h ../CA80/i8255_sys.h ../CA80/i8255_usr.h ../CA80/music.h ../CA80/binary.h ../CA80/eden.h ../CA80/audioplayer.h ../CA80/audioplayerthread.h ../CA80/objmem.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../CA80/main.cpp ../CA80/configfile.cpp ../CA80/mainwindow.cpp ../CA80/appcore.cpp ../CA80/cpumem.cpp ../CA80/display.cpp ../CA80/keyboard.cpp ../CA80/i8255.cpp ../CA80/keycapture.cpp ../CA80/sound.cpp ../CA80/taperecorder.cpp ../CA80/extdatetime.cpp ../CA80/i8255_sys.cpp ../CA80/i8255_usr.cpp ../CA80/music.cpp ../CA80/eden.cpp ../CA80/audioplayer.cpp ../CA80/audioplayerthread.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../CA80/mainwindow.h ../CA80/appcore.h ../CA80/configfile.h ../CA80/cpumem.h ../CA80/ctc.h ../CA80/display.h ../CA80/keyboard.h ../CA80/i8255.h ../CA80/keycapture.h ../CA80/sound.h ../CA80/taperecorder.h ../CA80/extdatetime.h ../CA80/i8255_sys.h ../CA80/i8255_usr.h ../CA80/music.h ../CA80/binary.h ../CA80/eden.h ../CA80/audioplayer.h ../CA80/audioplayerthread.h ../CA80/objmem.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../CA80/main.cpp ../CA80/configfile.cpp ../CA80/ctc.cpp ../CA80/mainwindow.cpp ../CA80/appcore.cpp ../CA80/cpumem.cpp ../CA80/display.cpp ../CA80/keyboard.cpp ../CA80/i8255.cpp ../CA80/keycapture.cpp ../CA80/sound.cpp ../CA80/taperecorder.cpp ../CA80/extdatetime.cpp ../CA80/i8255_sys.cpp ../CA80/i8255_usr.cpp ../CA80/music.cpp ../CA80/eden.cpp ../CA80/audioplayer.cpp ../CA80/audioplayerthread.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../CA80/mainwindow.ui $(DISTDIR)/
 
 
@@ -463,6 +467,7 @@ moc_mainwindow.cpp: ../CA80/mainwindow.h \
 		../CA80/music.h \
 		../CA80/sound.h \
 		../CA80/extdatetime.h \
+		../CA80/ctc.h \
 		../CA80/configfile.h \
 		../CA80/audioplayer.h \
 		../CA80/audioplayerthread.h \
@@ -523,6 +528,7 @@ main.o: ../CA80/main.cpp ../CA80/mainwindow.h \
 		../CA80/music.h \
 		../CA80/sound.h \
 		../CA80/extdatetime.h \
+		../CA80/ctc.h \
 		../CA80/configfile.h \
 		../CA80/audioplayer.h \
 		../CA80/audioplayerthread.h
@@ -532,6 +538,12 @@ configfile.o: ../CA80/configfile.cpp ../CA80/configfile.h \
 		../CA80/eden.h \
 		../CA80/objmem.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o configfile.o ../CA80/configfile.cpp
+
+ctc.o: ../CA80/ctc.cpp ../CA80/ctc.h \
+		../CA80/eden.h \
+		../CA80/objmem.h \
+		../CA80/binary.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ctc.o ../CA80/ctc.cpp
 
 mainwindow.o: ../CA80/mainwindow.cpp ../CA80/mainwindow.h \
 		../CA80/appcore.h \
@@ -548,6 +560,7 @@ mainwindow.o: ../CA80/mainwindow.cpp ../CA80/mainwindow.h \
 		../CA80/music.h \
 		../CA80/sound.h \
 		../CA80/extdatetime.h \
+		../CA80/ctc.h \
 		../CA80/configfile.h \
 		../CA80/audioplayer.h \
 		../CA80/audioplayerthread.h \
@@ -568,6 +581,7 @@ appcore.o: ../CA80/appcore.cpp ../CA80/appcore.h \
 		../CA80/music.h \
 		../CA80/sound.h \
 		../CA80/extdatetime.h \
+		../CA80/ctc.h \
 		../CA80/configfile.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o appcore.o ../CA80/appcore.cpp
 
@@ -583,7 +597,8 @@ cpumem.o: ../CA80/cpumem.cpp ../CA80/cpumem.h \
 		../CA80/i8255_usr.h \
 		../CA80/music.h \
 		../CA80/sound.h \
-		../CA80/extdatetime.h
+		../CA80/extdatetime.h \
+		../CA80/ctc.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cpumem.o ../CA80/cpumem.cpp
 
 display.o: ../CA80/display.cpp ../CA80/display.h \

@@ -27,6 +27,13 @@ MainWindow::MainWindow(QWidget *parent) :
     p.setColor(QPalette::Text, Qt::white);
     ui->DiaplayScreen->setPalette(p);
 
+    QFont Font_ = ui->InfoMem->font();
+    Font_.setPointSize(10);
+    ui->InfoMem->setFont(Font_);
+    Font_ = ui->InfoRegs->font();
+    Font_.setPointSize(10);
+    ui->InfoRegs->setFont(Font_);
+
     // Podlaczanie zdarzen zegara i klawiszy
     connect(ui->DiaplayScreen, SIGNAL(KeyPress(QKeyEvent*)), this, SLOT(KeyPress(QKeyEvent*)));
     connect(ui->DiaplayScreen, SIGNAL(KeyRelease(QKeyEvent*)), this, SLOT(KeyRelease(QKeyEvent*)));
@@ -36,11 +43,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Odczyt konfiguracji
     SetSettingsAllowed = false;
-
-    ui->Mem0Writable->setChecked(Core._CpuMem->Mem0Writable);
-    ui->Mem1Writable->setChecked(Core._CpuMem->Mem1Writable);
-    ui->Mem2Writable->setChecked(Core._CpuMem->Mem2Writable);
-    ui->Mem3Writable->setChecked(Core._CpuMem->Mem3Writable);
 
     ui->Mem0Size->setCurrentIndex(Core._CpuMem->MemSizeIdxGet(0));
     ui->Mem1Size->setCurrentIndex(Core._CpuMem->MemSizeIdxGet(1));
@@ -59,12 +61,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->INTTimeT->setText(Eden::ToQStr(to_string(Core._CpuMem->INTTime)));
     ui->NMITimeL->setChecked(Core._CpuMem->NMIExists);
     ui->INTTimeL->setChecked(Core._CpuMem->INTExists);
+
+    ui->CTC0TimeL->setChecked(Core._CTC->CTC0Exists);
+    ui->CTC0TimeT->setText(Eden::ToQStr(to_string(Core._CTC->CTC0Time)));
     ui->TimerPeriodT->setText(Eden::ToQStr(to_string(Core.TimerPeriod)));
 
     ui->SoundBufSizeT->setText(Eden::ToQStr(to_string(Core.SoundBufSize)));
     ui->SoundChunkSizeT->setText(Eden::ToQStr(to_string(Core.SoundChunkSize)));
+    ui->SoundMinFillT->setText(Eden::ToQStr(to_string(Core.SoundMinFill)));
     ui->SoundVolumeT->setValue(Core.SoundVolume);
     ui->MusicVolumeT->setValue(Core.MusicVolume);
+    ui->TapeVolumeT->setValue(Core.TapeVolume);
+    ui->TapePrebufferT->setText(Eden::ToQStr(to_string(Core._TapeRecorder->TapeAudioPrebuffer)));
     ui->TriggerTimeT->setText(Eden::ToQStr(to_string(Core._Sound->TriggerTime)));
 
     GetKeyList();
@@ -104,6 +112,7 @@ void MainWindow::EmuStart()
         AP = new EdenClass::AudioPlayer();
 
         SoundChunkSize = Core.SoundChunkSize;
+        SoundMinFill = Core.SoundMinFill;
         AP->SetParams(48000, 2, 1, Core.SoundBufSize, Core.TimerPeriod);
         AP->PutSilenceToBuffer(Core.SoundBufSize * 2);
         AP->PlayStart();
@@ -154,24 +163,20 @@ void MainWindow::AudioTimerTick()
         return;
     }
 
-    // Minimalny bufor, czyl minimalna dlugosc tablicy probek
-    // jednorazowo wprowadzana do bufora audio
-    int MinBuf = SoundChunkSize;
-
     // Zabezpieczenie przed zwiekszaniem sie ilosci danych w buforze do odtworzenia,
     // ktore powodowaloby coraz wieksze opoznienie w stosunku do zadanych zmian
     // parametrow dzwieku
-    if (AP->GetAudioRemaining() <= (MinBuf << 1))
+    while (AP->GetAudioRemaining() <= SoundMinFill)
     {
         // Tworzenie tymczasowej tablicy do dzwieku
-        short * Temp = new short[MinBuf];
-        for (int i = 0; i < MinBuf; i++)
+        short * Temp = new short[SoundChunkSize];
+        for (int i = 0; i < SoundChunkSize; i++)
         {
-            Temp[i] = Core._Sound->GetSample(160 * Core.SoundVolume) + Core._Music->GetSample(160 * Core.MusicVolume);
+            Temp[i] = Core._Sound->GetSample(160 * Core.SoundVolume) + Core._Music->GetSample(160 * Core.MusicVolume) + Core._TapeRecorder->GetSample(160 * Core.TapeVolume);
         }
 
         // Wprowadzanie tablicy do bufora
-        AP->PutToBuffer(Temp, MinBuf);
+        AP->PutToBuffer(Temp, SoundChunkSize);
 
         // Niszczenie tymczasowej tablicy
         delete[] Temp;
@@ -182,11 +187,6 @@ void MainWindow::AudioTimerTick()
 
 void MainWindow::TimerEvent()
 {
-    if (SoundAudible)
-    {
-        AudioTimerTick();
-    }
-
     Core._CpuMem->ExecMutex.lock();
     string NewDisp = Core._Display->GetDisplay();
     if (NewDisp.size() > 0)
@@ -236,6 +236,11 @@ void MainWindow::TimerEvent()
     }
 
     PortO();
+
+    if (SoundAudible)
+    {
+        AudioTimerTick();
+    }
 
     Core._CpuMem->ExecMutex.unlock();
 }
@@ -672,13 +677,11 @@ void MainWindow::SetSettings()
 {
     if (SetSettingsAllowed)
     {
-        Core._CpuMem->Mem0Writable = ui->Mem0Writable->isChecked();
-        Core._CpuMem->Mem1Writable = ui->Mem1Writable->isChecked();
-        Core._CpuMem->Mem2Writable = ui->Mem2Writable->isChecked();
-        Core._CpuMem->Mem3Writable = ui->Mem3Writable->isChecked();
         Core._Keyboard->NewCA80 = ui->NewCA80->isChecked();
         Core.SoundAudible = ui->SoundAudible->isChecked();
         Core.SoundVolume = ui->SoundVolumeT->value();
+        Core.TapeVolume = ui->TapeVolumeT->value();
+        Core._TapeRecorder->TapeAudioPrebuffer = Eden::ToInt(ui->TapePrebufferT->text());
         Core._Sound->TriggerTime = Eden::ToInt(ui->TriggerTimeT->text());
         Core.MusicVolume = ui->MusicVolumeT->value();
         Core._CpuMem->MemSizeIdxSet(0, ui->Mem0Size->currentIndex());
@@ -689,9 +692,12 @@ void MainWindow::SetSettings()
         Core._CpuMem->INTTime = Eden::ToInt(ui->INTTimeT->text());
         Core._CpuMem->NMIExists = ui->NMITimeL->isChecked();
         Core._CpuMem->INTExists = ui->INTTimeL->isChecked();
+        Core._CTC->CTC0Exists = ui->CTC0TimeL->isChecked();
+        Core._CTC->CTC0Time = Eden::ToInt(ui->CTC0TimeT->text());
         Core.TimerPeriod = Eden::ToInt(ui->TimerPeriodT->text());
         Core.SoundBufSize = Eden::ToInt(ui->SoundBufSizeT->text());
         Core.SoundChunkSize = Eden::ToInt(ui->SoundChunkSizeT->text());
+        Core.SoundMinFill = Eden::ToInt(ui->SoundMinFillT->text());
     }
 }
 
@@ -702,30 +708,6 @@ void MainWindow::on_NewCA80_toggled(bool checked)
 }
 
 void MainWindow::on_SoundAudible_toggled(bool checked)
-{
-    checked = !checked;
-    SetSettings();
-}
-
-void MainWindow::on_Mem0Writable_toggled(bool checked)
-{
-    checked = !checked;
-    SetSettings();
-}
-
-void MainWindow::on_Mem1Writable_toggled(bool checked)
-{
-    checked = !checked;
-    SetSettings();
-}
-
-void MainWindow::on_Mem2Writable_toggled(bool checked)
-{
-    checked = !checked;
-    SetSettings();
-}
-
-void MainWindow::on_Mem3Writable_toggled(bool checked)
 {
     checked = !checked;
     SetSettings();
@@ -1324,4 +1306,39 @@ void MainWindow::on_PortC1_toggled(bool checked)
 void MainWindow::on_PortC0_toggled(bool checked)
 {
     PortI(checked);
+}
+
+void MainWindow::on_SoundMinFillT_textChanged(const QString &arg1)
+{
+    QString X = arg1;
+    X = "";
+    SetSettings();
+}
+
+void MainWindow::on_TapePrebufferT_textChanged(const QString &arg1)
+{
+    QString X = arg1;
+    X = "";
+    SetSettings();
+}
+
+void MainWindow::on_TapeVolumeT_valueChanged(int value)
+{
+    value++;
+    value--;
+    SetSettings();
+}
+
+void MainWindow::on_CTC0TimeT_textChanged(const QString &arg1)
+{
+    QString X = arg1;
+    X = "";
+    SetSettings();
+}
+
+void MainWindow::on_CTC0TimeL_toggled(bool checked)
+{
+    checked = !checked;
+    checked = !checked;
+    SetSettings();
 }

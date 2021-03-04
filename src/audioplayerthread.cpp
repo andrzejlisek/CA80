@@ -252,10 +252,11 @@ namespace EdenClass
     ///
     void AudioPlayerThread::PlayStart()
     {
+        Working = true;
         QByteArray TempBuf(BufSize * SizeFactor, 0);
         mIOOutput = mAudioOutput->start();
         mIOOutput->write(TempBuf);
-        Working = true;
+        QObject::connect(mAudioOutput, SIGNAL(stateChanged(QAudio::State)), this, SLOT(DevStateChanged(QAudio::State)));
     }
 
     ///
@@ -263,6 +264,7 @@ namespace EdenClass
     ///
     void AudioPlayerThread::PlayStop()
     {
+        QObject::disconnect(mAudioOutput, SIGNAL(stateChanged(QAudio::State)), this, SLOT(DevStateChanged(QAudio::State)));
         Working = false;
         mAudioOutput->stop();
         mIOOutput = 0;
@@ -329,5 +331,18 @@ namespace EdenClass
             return false;
         }
         return true;
+    }
+
+    void AudioPlayerThread::DevStateChanged(QAudio::State NewState)
+    {
+        //enum State { ActiveState, SuspendedState, StoppedState, IdleState, InterruptedState };
+        if (Working)
+        {
+            if (NewState == 3)
+            {
+                QByteArray TempBuf(BufSize * SizeFactor, 0);
+                mIOOutput->write(TempBuf);
+            }
+        }
     }
 }

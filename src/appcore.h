@@ -14,6 +14,8 @@
 #include <iostream>
 #include "extdatetime.h"
 #include "music.h"
+#include "configfile.h"
+#include "ctc.h"
 
 class AppCore
 {
@@ -30,17 +32,20 @@ public:
     TapeRecorder * _TapeRecorder;
     ExtDateTime * _ExtDateTime;
     Music * _Music;
+    CTC * _CTC;
 
     map<int,int> KeyMap;
     string VisKey[24];
     bool SoundAudible;
     int SoundVolume;
     int MusicVolume;
+    int TapeVolume;
     void Reset();
 
     int TimerPeriod;
     int SoundBufSize;
     int SoundChunkSize;
+    int SoundMinFill;
 };
 
 #endif // APPCORE_H

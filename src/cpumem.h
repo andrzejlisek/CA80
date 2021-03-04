@@ -18,6 +18,12 @@
 #include <algorithm>
 #include "extdatetime.h"
 #include "binary.h"
+#include <random>
+#include "ctc.h"
+
+#include <climits>
+#include <algorithm>
+#include <functional>
 
 
 #define FlagCSet Reg_F = Reg_F | b00000001
@@ -66,13 +72,13 @@ public:
 
     void LoadRom(bool EraseMem);
 
-
     I8255_SYS * _I8255_SYS;
     I8255_USR * _I8255_USR;
     Sound * _Sound;
     Display * _Display;
     TapeRecorder * _TapeRecorder;
     ExtDateTime * _ExtDateTime;
+    CTC * _CTC;
 
     int StepCounter;
 
@@ -109,8 +115,8 @@ public:
     void MemSizeIdxSet(int N, int Idx);
     int MemSizeIdxGet(int N);
 
-    long NMITime;
-    long INTTime;
+    llong NMITime;
+    llong INTTime;
     bool NMIExists;
     bool INTExists;
 
@@ -118,6 +124,8 @@ public:
 
     vector<int> Tester;
 private:
+    random_device RandomDev;
+
 
     bool Halted;
 
@@ -129,10 +137,11 @@ private:
     bool InterruptNMI;
 
 
-    long CycleCounterNMI;
-    long CycleCounterINT;
+    llong CycleCounterNMI;
+    llong CycleCounterINT;
 
     uchar InterruptMode;
+    uchar InterruptDevAddr;
 
     uchar Reg_A, Reg_A_;
     uchar Reg_F, Reg_F_;

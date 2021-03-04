@@ -17,16 +17,30 @@ void CpuMem::LoadRom(bool EraseMem)
     // Zerowanie pamieci
     if (EraseMem)
     {
+        uniform_int_distribution<int> dist(0,255);
         for (int I = 0; I < 65536; I++)
         {
-            Mem[I] = 0x00;
+            Mem[I] = dist(RandomDev);
         }
     }
 
     // Ladowanie plikow ROM
     for (uint I = 0; I < RomFile.size(); I++)
     {
-        ifstream RomF((RomFile[I]).c_str(), ios::in|ios::binary);
+        QFile RomF(Eden::ToQStr(RomFile[I]));
+        if (RomF.open(QIODevice::ReadOnly))
+        {
+            int RomS = RomF.size();
+            RomF.read((char*)(Mem + RomBegin[I]), RomS);
+            RomF.close();
+            RomEnd[I] = RomBegin[I] + (RomS) - 1;
+        }
+        else
+        {
+            RomEnd[I] = -1;
+        }
+
+        /*ifstream RomF((RomFile[I]).c_str(), ios::in|ios::binary);
         bool FileLoaded = RomF.is_open();
         if (FileLoaded)
         {
@@ -40,7 +54,7 @@ void CpuMem::LoadRom(bool EraseMem)
         else
         {
             RomEnd[I] = -1;
-        }
+        }*/
     }
 }
 
@@ -73,6 +87,12 @@ void CpuMem::SortRoms()
 void CpuMem::MemSizeIdxSet(int N, int Idx)
 {
     int T = 0;
+    bool RW = false;
+    if (Idx > 4)
+    {
+        Idx = Idx - 5;
+        RW = true;
+    }
     switch (Idx)
     {
         case 0: T = 0x3FFF; break;
@@ -83,30 +103,31 @@ void CpuMem::MemSizeIdxSet(int N, int Idx)
     }
     switch (N)
     {
-        case 0: Mem0Size = T | 0xC000; break;
-        case 1: Mem1Size = T | 0xC000; break;
-        case 2: Mem2Size = T | 0xC000; break;
-        case 3: Mem3Size = T | 0xC000; break;
+        case 0: Mem0Size = T | 0xC000; Mem0Writable = RW; break;
+        case 1: Mem1Size = T | 0xC000; Mem1Writable = RW; break;
+        case 2: Mem2Size = T | 0xC000; Mem2Writable = RW; break;
+        case 3: Mem3Size = T | 0xC000; Mem3Writable = RW; break;
     }
 }
 
 int CpuMem::MemSizeIdxGet(int N)
 {
     int T = 0;
+    int IdxOffset = 0;
     switch (N)
     {
-        case 0: T = Mem0Size; break;
-        case 1: T = Mem1Size; break;
-        case 2: T = Mem2Size; break;
-        case 3: T = Mem3Size; break;
+        case 0: T = Mem0Size; if (Mem0Writable) { IdxOffset = 5; } break;
+        case 1: T = Mem1Size; if (Mem1Writable) { IdxOffset = 5; } break;
+        case 2: T = Mem2Size; if (Mem2Writable) { IdxOffset = 5; } break;
+        case 3: T = Mem3Size; if (Mem3Writable) { IdxOffset = 5; } break;
     }
     switch (T & 0x3FFF)
     {
-        case 0x3FFF: return 0;
-        case 0x1FFF: return 1;
-        case 0x0FFF: return 2;
-        case 0x07FF: return 3;
-        case 0x03FF: return 4;
+        case 0x3FFF: return 0 + IdxOffset;
+        case 0x1FFF: return 1 + IdxOffset;
+        case 0x0FFF: return 2 + IdxOffset;
+        case 0x07FF: return 3 + IdxOffset;
+        case 0x03FF: return 4 + IdxOffset;
     }
     return -1;
 }
@@ -300,28 +321,28 @@ void CpuMem::ProgramWork(bool OneStep)
                         Reg_IFF2 = false;
                         switch (InterruptMode)
                         {
-                        case 0:
-                            // Urzadzenie zewnetrzne dostarcza rozkaz do wykonania
-                            // Ten tryb nie jest uzywany w CA80
-                            break;
-                        case 1:
-                            // Wywolanie rozkazu RST 0x38
-                            CpuCyclePre(5, 3, 3);
-                            DoJumpAbs(0x0038, true);
-                            CpuCyclePost(5, 3, 3);
-                            break;
-                        case 2:
-                            // Mlodszy bajt adresu jest dostarczany przez urzadzenie,
-                            // Starszy bajt adresu jest w rejestrze I
-                            // Wywolanie rozkazu CALL pod adres, ktory jest zapisany
-                            // w pamieci pod wskazanym adresem
-                            ushort IntAddr = (((ushort)Reg_I) << 8) + 0x0000;
-                            ushort IntAddrH = MemGet(IntAddr + 1);
-                            ushort IntAddrL = MemGet(IntAddr + 0);
-                            CpuCyclePre(4, 3, 4, 3, 3);
-                            DoJumpAbs((IntAddrH << 8) + IntAddrL, true);
-                            CpuCyclePost(4, 3, 4, 3, 3);
-                            break;
+                            case 0:
+                                // Urzadzenie zewnetrzne dostarcza rozkaz do wykonania
+                                // Ten tryb nie jest uzywany w CA80
+                                break;
+                            case 1:
+                                // Wywolanie rozkazu RST 0x38
+                                CpuCyclePre(5, 3, 3);
+                                DoJumpAbs(0x0038, true);
+                                CpuCyclePost(5, 3, 3);
+                                break;
+                            case 2:
+                                // Mlodszy bajt adresu jest dostarczany przez urzadzenie,
+                                // Starszy bajt adresu jest w rejestrze I
+                                // Wywolanie rozkazu CALL pod adres, ktory jest zapisany
+                                // w pamieci pod wskazanym adresem
+                                ushort IntAddr = (((ushort)Reg_I) << 8) + (ushort)InterruptDevAddr;
+                                ushort IntAddrH = MemGet(IntAddr + 1);
+                                ushort IntAddrL = MemGet(IntAddr + 0);
+                                CpuCyclePre(4, 3, 4, 3, 3);
+                                DoJumpAbs((IntAddrH << 8) + IntAddrL, true);
+                                CpuCyclePost(4, 3, 4, 3, 3);
+                                break;
                         }
 
                         // Sprawdzenie wejscie do pulapki
@@ -3004,6 +3025,8 @@ void CpuMem::ProgramWork(bool OneStep)
 ///
 void CpuMem::Reset()
 {
+    _CTC->Reset();
+
     // Rejestry wedlug opisu MIK
     Reg_PC = 0;
 
@@ -3015,7 +3038,6 @@ void CpuMem::Reset()
     Reg_I = 0;
 
     // Pozostale rejestry
-
     Reg_A = 0;
     Reg_A_ = 0;
     Reg_F = 0;
@@ -3044,9 +3066,9 @@ void CpuMem::Reset()
     Halted = false;
 
     // Dane umozliwiajace wykrywanie przerwan
-
     InterruptINT = true;
     InterruptNMI = false;
+    InterruptDevAddr = 0;
 
     // Licznik cykli do generowania przerwan
     CycleCounterNMI = 0;
@@ -3153,6 +3175,15 @@ void CpuMem::CpuCyclePostX(int N)
         }
     }
 
+    if (InterruptINT)
+    {
+        if (_CTC->Interrupt())
+        {
+            InterruptINT = false;
+            InterruptDevAddr = _CTC->InterruptAddr();
+        }
+    }
+
     TicksEstimated += N;
 
     // Uwzglednianie cykli w elementach zewnetrznych
@@ -3161,6 +3192,7 @@ void CpuMem::CpuCyclePostX(int N)
         _Sound->Clock();
         _Display->Clock();
         _TapeRecorder->Clock();
+        _CTC->Clock();
     }
 }
 
@@ -3270,6 +3302,7 @@ void CpuMem::DoRET(bool Condition)
 
 void CpuMem::DoRETI()
 {
+    _CTC->InterruptReset();
     uchar PCH;
     uchar PCL;
     DoPOP(PCH, PCL);
@@ -3772,87 +3805,50 @@ void CpuMem::DoIN(uchar AddrH, uchar AddrL, uchar &Reg, bool Flags)
     AddrH++;
     AddrH--;
 
-    bool NoStd = true;
+    bool NoStd = false;
     Reg = 0x00;
 
-    // Z80ACTC - kanal 0
-    if (AddrL == 0xE0)
+    switch (AddrL)
     {
-        NoStd = false;
-    }
-
-    // Z80ACTC - kanal 1
-    if (AddrL == 0xE1)
-    {
-        NoStd = false;
-    }
-
-    // Z80ACTC - kanal 2
-    if (AddrL == 0xE2)
-    {
-        NoStd = false;
-    }
-
-    // Z80ACTC - kanal 3
-    if (AddrL == 0xE3)
-    {
-        NoStd = false;
-    }
-
-    // I8255 systemowy - port A
-    if (AddrL == 0xF0)
-    {
-        NoStd = false;
-        Reg = _I8255_SYS->PortAGet();
-    }
-
-    // I8255 systemowy - port B
-    if (AddrL == 0xF1)
-    {
-        NoStd = false;
-        Reg = _I8255_SYS->PortBGet();
-    }
-
-    // I8255 systemowy - port C
-    if (AddrL == 0xF2)
-    {
-        NoStd = false;
-        Reg = _I8255_SYS->PortCGet();
-    }
-
-    // I8255 uzytkownika - port A
-    if (AddrL == 0xE0)
-    {
-        NoStd = false;
-        Reg = _I8255_USR->PortAGet();
-    }
-
-    // I8255 uzytkownika - port B
-    if (AddrL == 0xE1)
-    {
-        NoStd = false;
-        Reg = _I8255_USR->PortBGet();
-    }
-
-    // I8255 uzytkownika - port C
-    if (AddrL == 0xE2)
-    {
-        NoStd = false;
-        Reg = _I8255_USR->PortCGet();
-    }
-
-    // Rozszerzenie - pobranie elementu daty lub godziny
-    if (AddrL == 0xFF)
-    {
-        NoStd = false;
-        Reg = _ExtDateTime->Get();
-    }
-
-    // Kasowanie zgloszenia przerwania INT
-    if (AddrL == 0xFC)
-    {
-        NoStd = false;
-        InterruptINT = true;
+        case 0xF8: // Z80ACTC - kanal 0
+            Reg = _CTC->Get(0);
+            break;
+        case 0xF9: // Z80ACTC - kanal 1
+            Reg = _CTC->Get(1);
+            break;
+        case 0xFA: // Z80ACTC - kanal 2
+            Reg = _CTC->Get(2);
+            break;
+        case 0xFB: // Z80ACTC - kanal 3
+            Reg = _CTC->Get(3);
+            break;
+        case 0xF0: // I8255 systemowy - port A
+            Reg = _I8255_SYS->PortAGet();
+            break;
+        case 0xF1: // I8255 systemowy - port B
+            Reg = _I8255_SYS->PortBGet();
+            break;
+        case 0xF2: // I8255 systemowy - port C
+            Reg = _I8255_SYS->PortCGet();
+            break;
+        case 0xE0: // I8255 uzytkownika - port A
+            Reg = _I8255_USR->PortAGet();
+            break;
+        case 0xE1: // I8255 uzytkownika - port B
+            Reg = _I8255_USR->PortBGet();
+            break;
+        case 0xE2: // I8255 uzytkownika - port C
+            Reg = _I8255_USR->PortCGet();
+            break;
+        case 0xFF: // Rozszerzenie - pobranie elementu daty lub godziny
+            Reg = _ExtDateTime->Get();
+            break;
+        case 0xFC: // Kasowanie zgloszenia przerwania INT
+            InterruptINT = true;
+            break;
+        default:
+            NoStd = true;
+            break;
     }
 
     if (NoStd)
@@ -3874,114 +3870,61 @@ void CpuMem::DoOUT(uchar AddrH, uchar AddrL, uchar &Reg)
     AddrH++;
     AddrH--;
 
-    bool NoStd = true;
+    bool NoStd = false;
 
-    // Z80ACTC - kanal 0
-    if (AddrL == 0xE0)
+    switch (AddrL)
     {
-        NoStd = false;
-    }
-
-    // Z80ACTC - kanal 1
-    if (AddrL == 0xE1)
-    {
-        NoStd = false;
-    }
-
-    // Z80ACTC - kanal 2
-    if (AddrL == 0xE2)
-    {
-        NoStd = false;
-    }
-
-    // Z80ACTC - kanal 3
-    if (AddrL == 0xE3)
-    {
-        NoStd = false;
-    }
-
-    // I8255 systemowy - port A
-    if (AddrL == 0xF0)
-    {
-        NoStd = false;
-        _I8255_SYS->PortASet(Reg);
-    }
-
-    // I8255 systemowy - port B
-    if (AddrL == 0xF1)
-    {
-        NoStd = false;
-        _I8255_SYS->PortBSet(Reg);
-    }
-
-    // I8255 systemowy - port C
-    if (AddrL == 0xF2)
-    {
-        NoStd = false;
-        _I8255_SYS->PortCSet(Reg);
-    }
-
-    // I8255 systemowy - ustawienia I8255 lub linie portu C
-    if (AddrL == 0xF3)
-    {
-        NoStd = false;
-        _I8255_SYS->PortSSet(Reg);
-    }
-
-    // I8255 uzytkownika - port A
-    if (AddrL == 0xE0)
-    {
-        NoStd = false;
-        _I8255_USR->PortASet(Reg);
-    }
-
-    // I8255 uzytkownika - port B
-    if (AddrL == 0xE1)
-    {
-        NoStd = false;
-        _I8255_USR->PortBSet(Reg);
-    }
-
-    // I8255 uzytkownika - port C
-    if (AddrL == 0xE2)
-    {
-        NoStd = false;
-        _I8255_USR->PortCSet(Reg);
-    }
-
-    // I8255 uzytkownika - ustawienia I8255 lub linie portu C
-    if (AddrL == 0xE3)
-    {
-        NoStd = false;
-        _I8255_USR->PortSSet(Reg);
-    }
-
-    // Uruchamianie licznika rozkazow pracy krokowej
-    if (AddrL == 0xF4)
-    {
-        NoStd = false;
-        StepCounter = 5;
-    }
-
-    // Sygnal dzwiekowy
-    if (AddrL == 0xEC)
-    {
-        NoStd = false;
-        _Sound->Trigger();
-    }
-
-    // Rozszerzenie - wybor typu pobieranego elementu daty lub godziny
-    if (AddrL == 0xFF)
-    {
-        NoStd = false;
-        _ExtDateTime->Set(Reg);
-    }
-
-    // Kasowanie zgloszenia przerwania INT
-    if (AddrL == 0xFC)
-    {
-        NoStd = false;
-        InterruptINT = true;
+        case 0xF8: // Z80ACTC - kanal 0
+            _CTC->Set(0, Reg);
+            break;
+        case 0xF9: // Z80ACTC - kanal 1
+            _CTC->Set(1, Reg);
+            break;
+        case 0xFA: // Z80ACTC - kanal 2
+            _CTC->Set(2, Reg);
+            break;
+        case 0xFB: // Z80ACTC - kanal 3
+            _CTC->Set(3, Reg);
+            break;
+        case 0xF0: // I8255 systemowy - port A
+            _I8255_SYS->PortASet(Reg);
+            break;
+        case 0xF1: // I8255 systemowy - port B
+            _I8255_SYS->PortBSet(Reg);
+            break;
+        case 0xF2: // I8255 systemowy - port C
+            _I8255_SYS->PortCSet(Reg);
+            break;
+        case 0xF3: // I8255 systemowy - ustawienia I8255 lub linie portu C
+            _I8255_SYS->PortSSet(Reg);
+            break;
+        case 0xE0: // I8255 uzytkownika - port A
+            _I8255_USR->PortASet(Reg);
+            break;
+        case 0xE1: // I8255 uzytkownika - port B
+            _I8255_USR->PortBSet(Reg);
+            break;
+        case 0xE2: // I8255 uzytkownika - port C
+            _I8255_USR->PortCSet(Reg);
+            break;
+        case 0xE3: // I8255 uzytkownika - ustawienia I8255 lub linie portu C
+            _I8255_USR->PortSSet(Reg);
+            break;
+        case 0xF4: // Uruchamianie licznika rozkazow pracy krokowej
+            StepCounter = 5;
+            break;
+        case 0xEC: // Sygnal dzwiekowy
+            _Sound->Trigger();
+            break;
+        case 0xFF: // Rozszerzenie - wybor typu pobieranego elementu daty lub godziny
+            _ExtDateTime->Set(Reg);
+            break;
+        case 0xFC: // Kasowanie zgloszenia przerwania INT
+            InterruptINT = true;
+            break;
+        default:
+            NoStd = true;
+            break;
     }
 
     if (NoStd)
@@ -4210,9 +4153,9 @@ string CpuMem::GetInfoRegs()
     SS << endl;
 
     //SS << "Index: " << endl;
-    SS << "PC=" << Eden::IntToHex16(Reg_PC) << "  ";
+    SS << "PC=" << Eden::IntToHex16(Reg_PC) << endl;
     SS << "SP=" << Eden::IntToHex16(Reg_SP) << endl;
-    SS << "IX=" << Eden::IntToHex16(Reg_IX) << "  ";
+    SS << "IX=" << Eden::IntToHex16(Reg_IX) << endl;
     SS << "IY=" << Eden::IntToHex16(Reg_IY) << endl;
     SS << endl;
 
@@ -4227,9 +4170,9 @@ string CpuMem::GetInfoRegs()
     SS << endl;
 
     SS << endl;
-    SS << "IM=" << (int)InterruptMode << " ";
-    SS << "IFF1=" << (Reg_IFF1 ? "1" : "0") << " ";
-    SS << "IFF2=" << (Reg_IFF2 ? "1" : "0") << " ";
+    SS << "IM=" << (int)InterruptMode << endl;
+    SS << "IFF1=" << (Reg_IFF1 ? "1" : "0") << endl;
+    SS << "IFF2=" << (Reg_IFF2 ? "1" : "0") << endl;
     SS << endl;
 
     return SS.str();
@@ -4283,7 +4226,26 @@ string CpuMem::GetInfoMem(int Addr)
 
 void CpuMem::MemImport(string FileName, int Addr)
 {
-    ifstream F(FileName.c_str(), ios::in|ios::binary);
+    QFile F(Eden::ToQStr(FileName));
+    if (F.open(QIODevice::ReadOnly))
+    {
+        int S = F.size();
+
+        if ((S + Addr) > 65535)
+        {
+            S = 65535 - Addr;
+        }
+        uchar * RAW = new uchar[S];
+        F.read((char*)RAW, S);
+        F.close();
+        for (int I = 0; I < S; I++)
+        {
+            MemSet(I + Addr, RAW[I]);
+        }
+        delete[] RAW;
+    }
+
+    /*ifstream F(FileName.c_str(), ios::in|ios::binary);
     if (F.is_open())
     {
         F.seekg(0, ios_base::end);
@@ -4301,13 +4263,13 @@ void CpuMem::MemImport(string FileName, int Addr)
             MemSet(I + Addr, RAW[I]);
         }
         delete[] RAW;
-    }
+    }*/
 }
 
 void CpuMem::MemExport(string FileName, int Addr1, int Addr2)
 {
-    ofstream F(FileName.c_str(), ios::out|ios::binary);
-    if (F.is_open())
+    QFile F(Eden::ToQStr(FileName));
+    if (F.open(QIODevice::WriteOnly))
     {
         uint S = Addr2 - Addr1 + 1;
         if ((S + Addr1) > 65535)
@@ -4323,4 +4285,22 @@ void CpuMem::MemExport(string FileName, int Addr1, int Addr2)
         F.close();
         delete[] RAW;
     }
+
+    /*ofstream F(FileName.c_str(), ios::out|ios::binary);
+    if (F.is_open())
+    {
+        uint S = Addr2 - Addr1 + 1;
+        if ((S + Addr1) > 65535)
+        {
+            S = 65535 - Addr1;
+        }
+        uchar * RAW = new uchar[S];
+        for (uint I = 0; I < S; I++)
+        {
+            RAW[I] = MemGet(I + Addr1);
+        }
+        F.write((char*)RAW, S);
+        F.close();
+        delete[] RAW;
+    }*/
 }

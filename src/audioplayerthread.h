@@ -51,6 +51,7 @@ namespace EdenClass
         int TotalLength;
     public slots:
         void FillAudioBuffer();
+        void DevStateChanged(QAudio::State NewState);
     };
 }
 

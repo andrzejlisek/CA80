@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>634</width>
-    <height>554</height>
+    <height>594</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,7 +40,7 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>110</y>
+          <y>130</y>
           <width>611</width>
           <height>181</height>
          </rect>
@@ -80,9 +80,9 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>290</y>
+          <y>310</y>
           <width>411</width>
-          <height>231</height>
+          <height>241</height>
          </rect>
         </property>
         <property name="title">
@@ -407,7 +407,7 @@
         <property name="geometry">
          <rect>
           <x>430</x>
-          <y>290</y>
+          <y>310</y>
           <width>191</width>
           <height>171</height>
          </rect>
@@ -539,9 +539,9 @@
         <property name="geometry">
          <rect>
           <x>430</x>
-          <y>460</y>
+          <y>480</y>
           <width>191</width>
-          <height>61</height>
+          <height>71</height>
          </rect>
         </property>
         <property name="title">
@@ -595,7 +595,7 @@
           <x>10</x>
           <y>10</y>
           <width>611</width>
-          <height>101</height>
+          <height>121</height>
          </rect>
         </property>
         <property name="title">
@@ -781,9 +781,9 @@
         <property name="geometry">
          <rect>
           <x>300</x>
-          <y>210</y>
+          <y>220</y>
           <width>131</width>
-          <height>311</height>
+          <height>331</height>
          </rect>
         </property>
         <property name="title">
@@ -815,7 +815,7 @@
           <x>440</x>
           <y>10</y>
           <width>181</width>
-          <height>201</height>
+          <height>211</height>
          </rect>
         </property>
         <property name="title">
@@ -847,209 +847,227 @@
           <x>300</x>
           <y>10</y>
           <width>131</width>
-          <height>201</height>
+          <height>211</height>
          </rect>
         </property>
         <property name="title">
          <string>Moduły pamięci</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_10">
-         <item row="2" column="1">
-          <widget class="QCheckBox" name="Mem1Writable">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QComboBox" name="Mem0Size">
-           <item>
-            <property name="text">
-             <string>16kB</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>8kB</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>4kB</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>2kB</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1kB</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QCheckBox" name="Mem2Writable">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QCheckBox" name="Mem3Writable">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="Mem0Writable">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="Mem_WritableL">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>RAM</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="Mem_SizeL">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Wielkość</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
+         <item row="2" column="0">
           <widget class="QComboBox" name="Mem2Size">
            <item>
             <property name="text">
-             <string>16kB</string>
+             <string>16kB ROM</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>8kB</string>
+             <string>8kB ROM</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>4kB</string>
+             <string>4kB ROM</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>2kB</string>
+             <string>2kB ROM</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>1kB</string>
+             <string>1kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>16kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>8kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>4kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1kB RAM</string>
             </property>
            </item>
           </widget>
          </item>
-         <item row="2" column="2">
-          <widget class="QComboBox" name="Mem1Size">
-           <item>
-            <property name="text">
-             <string>16kB</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>8kB</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>4kB</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>2kB</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1kB</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="4" column="2">
+         <item row="3" column="0">
           <widget class="QComboBox" name="Mem3Size">
            <item>
             <property name="text">
-             <string>16kB</string>
+             <string>16kB ROM</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>8kB</string>
+             <string>8kB ROM</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>4kB</string>
+             <string>4kB ROM</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>2kB</string>
+             <string>2kB ROM</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>1kB</string>
+             <string>1kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>16kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>8kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>4kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1kB RAM</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QComboBox" name="Mem0Size">
+           <item>
+            <property name="text">
+             <string>16kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>8kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>4kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>16kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>8kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>4kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1kB RAM</string>
             </property>
            </item>
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="Mem0L">
-           <property name="text">
-            <string>00:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="Mem1L">
-           <property name="text">
-            <string>40:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="Mem2L">
-           <property name="text">
-            <string>80:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="Mem3L">
-           <property name="text">
-            <string>C0:</string>
-           </property>
+          <widget class="QComboBox" name="Mem1Size">
+           <item>
+            <property name="text">
+             <string>16kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>8kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>4kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1kB ROM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>16kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>8kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>4kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2kB RAM</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1kB RAM</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>
@@ -1058,9 +1076,9 @@
         <property name="geometry">
          <rect>
           <x>440</x>
-          <y>210</y>
+          <y>220</y>
           <width>181</width>
-          <height>311</height>
+          <height>331</height>
          </rect>
         </property>
         <property name="title">
@@ -1116,36 +1134,13 @@
           <x>10</x>
           <y>10</y>
           <width>281</width>
-          <height>201</height>
+          <height>191</height>
          </rect>
         </property>
         <property name="title">
          <string>Ustawienia emulacji</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_12">
-         <item row="5" column="1">
-          <widget class="QLineEdit" name="INTTimeT"/>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="NMITimeT"/>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="TimerPeriodL">
-           <property name="text">
-            <string>Interwał timera [ms]:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QLineEdit" name="TimerPeriodT"/>
-         </item>
-         <item row="4" column="0">
-          <widget class="QCheckBox" name="NMITimeL">
-           <property name="text">
-            <string>Okres NMI [clk]:</string>
-           </property>
-          </widget>
-         </item>
          <item row="5" column="0">
           <widget class="QCheckBox" name="INTTimeL">
            <property name="text">
@@ -1160,13 +1155,46 @@
            </property>
           </widget>
          </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="TimerPeriodL">
+           <property name="text">
+            <string>Interwał timera [ms]:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="INTTimeT"/>
+         </item>
+         <item row="7" column="1">
+          <widget class="QLineEdit" name="TimerPeriodT"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QCheckBox" name="NMITimeL">
+           <property name="text">
+            <string>Okres NMI [clk]:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="NMITimeT"/>
+         </item>
+         <item row="6" column="0">
+          <widget class="QCheckBox" name="CTC0TimeL">
+           <property name="text">
+            <string>Okres CTC [clk]:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="CTC0TimeT"/>
+         </item>
         </layout>
        </widget>
        <widget class="QGroupBox" name="SoundPanel">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>360</y>
+          <y>390</y>
           <width>281</width>
           <height>161</height>
          </rect>
@@ -1175,25 +1203,12 @@
          <string>Ustawienia odtwarzania dźwięku</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_13">
-         <item row="7" column="2">
-          <widget class="QLineEdit" name="SoundChunkSizeT"/>
-         </item>
          <item row="7" column="0">
           <widget class="QLabel" name="SoundChunkSizeL">
            <property name="text">
             <string>Długość elementu [smp]:</string>
            </property>
           </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="SoundBufSizeL">
-           <property name="text">
-            <string>Długość bufora [smp]:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="2">
-          <widget class="QLineEdit" name="SoundBufSizeT"/>
          </item>
          <item row="1" column="0" colspan="3">
           <widget class="QCheckBox" name="SoundAudible">
@@ -1202,25 +1217,54 @@
            </property>
           </widget>
          </item>
+         <item row="7" column="2">
+          <widget class="QLineEdit" name="SoundChunkSizeT"/>
+         </item>
+         <item row="5" column="2">
+          <widget class="QLineEdit" name="SoundBufSizeT"/>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="SoundBufSizeL">
+           <property name="text">
+            <string>Długość bufora [smp]:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QLabel" name="SoundMinFillL">
+           <property name="text">
+            <string>Min. zapełnienie [smp]:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="2">
+          <widget class="QLineEdit" name="SoundMinFillT"/>
+         </item>
         </layout>
        </widget>
        <widget class="QGroupBox" name="SoundPanelGen">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>210</y>
+          <y>200</y>
           <width>281</width>
-          <height>151</height>
+          <height>191</height>
          </rect>
         </property>
         <property name="title">
          <string>Ustawienia generowania dźwięku</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_15">
-         <item row="0" column="0">
-          <widget class="QLabel" name="SoundVolumeL">
-           <property name="text">
-            <string>Głośność gen. wew.:</string>
+         <item row="0" column="1">
+          <widget class="QSlider" name="SoundVolumeT">
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>100</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
@@ -1237,15 +1281,39 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="MusicVolumeL">
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="TriggerTimeT"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="TapeVolumeL">
            <property name="text">
-            <string>Głośność pozytywki:</string>
+            <string>Magnetofon:</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QSlider" name="SoundVolumeT">
+         <item row="0" column="0">
+          <widget class="QLabel" name="SoundVolumeL">
+           <property name="text">
+            <string>Generator wewn.:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="TriggerTimeL">
+           <property name="text">
+            <string>Czas pobudzenia [clk]:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="MusicVolumeL">
+           <property name="text">
+            <string>Pozytywka:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QSlider" name="TapeVolumeT">
            <property name="maximum">
             <number>100</number>
            </property>
@@ -1257,15 +1325,15 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="TriggerTimeL">
+         <item row="4" column="0">
+          <widget class="QLabel" name="TapePrebuffer">
            <property name="text">
-            <string>Czas pobudzenia [clk]:</string>
+            <string>Bufor magnet. [smp]:</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="TriggerTimeT"/>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="TapePrebufferT"/>
          </item>
         </layout>
        </widget>
@@ -1277,10 +1345,10 @@
        <widget class="QGroupBox" name="InfoRegsPanel">
         <property name="geometry">
          <rect>
-          <x>430</x>
-          <y>110</y>
-          <width>191</width>
-          <height>411</height>
+          <x>480</x>
+          <y>10</y>
+          <width>141</width>
+          <height>541</height>
          </rect>
         </property>
         <property name="title">
@@ -1318,18 +1386,35 @@
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>411</width>
-          <height>511</height>
+          <width>461</width>
+          <height>471</height>
          </rect>
         </property>
         <property name="title">
          <string>Pamięć FF00-FFFF</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_5">
-         <item row="2" column="0">
-          <widget class="QPushButton" name="MemLoad">
-           <property name="text">
-            <string>Wczytaj zawartość</string>
+         <item row="0" column="0" colspan="2">
+          <widget class="QPlainTextEdit" name="InfoMem">
+           <property name="font">
+            <font>
+             <family>Courier New</family>
+            </font>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::NoTextInteraction</set>
            </property>
           </widget>
          </item>
@@ -1356,27 +1441,10 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0" colspan="2">
-          <widget class="QPlainTextEdit" name="InfoMem">
-           <property name="font">
-            <font>
-             <family>Courier New</family>
-            </font>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-           <property name="textInteractionFlags">
-            <set>Qt::NoTextInteraction</set>
+         <item row="2" column="0">
+          <widget class="QPushButton" name="MemLoad">
+           <property name="text">
+            <string>Wczytaj zawartość</string>
            </property>
           </widget>
          </item>
@@ -1385,10 +1453,10 @@
        <widget class="QGroupBox" name="InfoControlPanel">
         <property name="geometry">
          <rect>
-          <x>430</x>
-          <y>10</y>
-          <width>191</width>
-          <height>101</height>
+          <x>10</x>
+          <y>480</y>
+          <width>461</width>
+          <height>71</height>
          </rect>
         </property>
         <property name="title">
@@ -1417,24 +1485,11 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Odświeżaj</string>
+            <string>Odświeżanie</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QPushButton" name="InfoProgStep">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Krok</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
+         <item row="0" column="2">
           <widget class="QPushButton" name="InfoProgStop">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
@@ -1444,6 +1499,19 @@
            </property>
            <property name="text">
             <string>Stop</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QPushButton" name="InfoProgStep">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Krok</string>
            </property>
           </widget>
          </item>
@@ -1463,6 +1531,110 @@
    <header>keycapture.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>CA80Tab</tabstop>
+  <tabstop>PortA7</tabstop>
+  <tabstop>PortA6</tabstop>
+  <tabstop>PortA5</tabstop>
+  <tabstop>PortA4</tabstop>
+  <tabstop>PortA3</tabstop>
+  <tabstop>PortA2</tabstop>
+  <tabstop>PortA1</tabstop>
+  <tabstop>PortA0</tabstop>
+  <tabstop>PortB7</tabstop>
+  <tabstop>PortB6</tabstop>
+  <tabstop>PortB5</tabstop>
+  <tabstop>PortB4</tabstop>
+  <tabstop>PortB3</tabstop>
+  <tabstop>PortB2</tabstop>
+  <tabstop>PortB1</tabstop>
+  <tabstop>PortB0</tabstop>
+  <tabstop>PortC7</tabstop>
+  <tabstop>PortC6</tabstop>
+  <tabstop>PortC5</tabstop>
+  <tabstop>PortC4</tabstop>
+  <tabstop>PortC3</tabstop>
+  <tabstop>PortC2</tabstop>
+  <tabstop>PortC1</tabstop>
+  <tabstop>PortC0</tabstop>
+  <tabstop>DiaplayScreen</tabstop>
+  <tabstop>Key17</tabstop>
+  <tabstop>Key0C</tabstop>
+  <tabstop>Key0D</tabstop>
+  <tabstop>Key0E</tabstop>
+  <tabstop>Key0F</tabstop>
+  <tabstop>Key13</tabstop>
+  <tabstop>Key16</tabstop>
+  <tabstop>Key08</tabstop>
+  <tabstop>Key09</tabstop>
+  <tabstop>Key0A</tabstop>
+  <tabstop>Key0B</tabstop>
+  <tabstop>Key10</tabstop>
+  <tabstop>Key15</tabstop>
+  <tabstop>Key04</tabstop>
+  <tabstop>Key05</tabstop>
+  <tabstop>Key06</tabstop>
+  <tabstop>Key07</tabstop>
+  <tabstop>Key11</tabstop>
+  <tabstop>Key14</tabstop>
+  <tabstop>Key00</tabstop>
+  <tabstop>Key01</tabstop>
+  <tabstop>Key02</tabstop>
+  <tabstop>Key03</tabstop>
+  <tabstop>Key12</tabstop>
+  <tabstop>TapeStop</tabstop>
+  <tabstop>TapeFwd</tabstop>
+  <tabstop>TapeRew</tabstop>
+  <tabstop>TapePlay</tabstop>
+  <tabstop>TapeRecord</tabstop>
+  <tabstop>TapeGen</tabstop>
+  <tabstop>TapeLoad</tabstop>
+  <tabstop>TapeSave</tabstop>
+  <tabstop>ProgStart</tabstop>
+  <tabstop>ProgStop</tabstop>
+  <tabstop>ProgReset</tabstop>
+  <tabstop>NewCA80</tabstop>
+  <tabstop>NMITimeL</tabstop>
+  <tabstop>NMITimeT</tabstop>
+  <tabstop>INTTimeL</tabstop>
+  <tabstop>INTTimeT</tabstop>
+  <tabstop>CTC0TimeL</tabstop>
+  <tabstop>CTC0TimeT</tabstop>
+  <tabstop>TimerPeriodT</tabstop>
+  <tabstop>SoundVolumeT</tabstop>
+  <tabstop>MusicVolumeT</tabstop>
+  <tabstop>TapeVolumeT</tabstop>
+  <tabstop>TriggerTimeT</tabstop>
+  <tabstop>TapePrebufferT</tabstop>
+  <tabstop>SoundAudible</tabstop>
+  <tabstop>SoundBufSizeT</tabstop>
+  <tabstop>SoundChunkSizeT</tabstop>
+  <tabstop>SoundMinFillT</tabstop>
+  <tabstop>Mem0Size</tabstop>
+  <tabstop>Mem1Size</tabstop>
+  <tabstop>Mem2Size</tabstop>
+  <tabstop>Mem3Size</tabstop>
+  <tabstop>TrapList</tabstop>
+  <tabstop>TrapAdd</tabstop>
+  <tabstop>TrapRem</tabstop>
+  <tabstop>RomList</tabstop>
+  <tabstop>RomAdd</tabstop>
+  <tabstop>RomRem</tabstop>
+  <tabstop>KeyList</tabstop>
+  <tabstop>KeyCodeT</tabstop>
+  <tabstop>KeyIdT</tabstop>
+  <tabstop>KeyAdd</tabstop>
+  <tabstop>KeyRem</tabstop>
+  <tabstop>InfoMem</tabstop>
+  <tabstop>InfomemAddr</tabstop>
+  <tabstop>MemLoad</tabstop>
+  <tabstop>MemSave</tabstop>
+  <tabstop>InfoRegs</tabstop>
+  <tabstop>InfoGet</tabstop>
+  <tabstop>InfoProgStart</tabstop>
+  <tabstop>InfoProgStop</tabstop>
+  <tabstop>InfoProgStep</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

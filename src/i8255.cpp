@@ -207,15 +207,16 @@ void I8255::Update8255_()
 
 void I8255::Reset()
 {
-    ParAint = 255;
-    ParAext = 255;
-    ParA = 255;
-    ParBint = 255;
-    ParBext = 255;
-    ParB = 255;
-    ParCint = 255;
-    ParCext = 255;
-    ParC = 255;
+    ParAint = 0;
+    ParAext = 0;
+    ParA = 0;
+    ParBint = 0;
+    ParBext = 0;
+    ParB = 0;
+    ParCint = 0;
+    ParCext = 0;
+    ParC = 0;
+
     ParAisInput = false;
     ParBisInput = false;
     ParCHisInput = false;

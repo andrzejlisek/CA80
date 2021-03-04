@@ -159,14 +159,6 @@ private slots:
 
     void on_SoundAudible_toggled(bool checked);
 
-    void on_Mem0Writable_toggled(bool checked);
-
-    void on_Mem1Writable_toggled(bool checked);
-
-    void on_Mem2Writable_toggled(bool checked);
-
-    void on_Mem3Writable_toggled(bool checked);
-
     void on_TrapAdd_clicked();
 
     void on_TrapRem_clicked();
@@ -261,8 +253,19 @@ private slots:
 
     void on_PortC0_toggled(bool checked);
 
+    void on_SoundMinFillT_textChanged(const QString &arg1);
+
+    void on_TapePrebufferT_textChanged(const QString &arg1);
+
+    void on_TapeVolumeT_valueChanged(int value);
+
+    void on_CTC0TimeT_textChanged(const QString &arg1);
+
+    void on_CTC0TimeL_toggled(bool checked);
+
 private:
     int SoundChunkSize;
+    int SoundMinFill;
     bool EmuRunning;
     bool SoundAudible;
     void EmuStart();

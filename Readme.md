@@ -40,7 +40,9 @@ W liniach ustawionych jako wyjście, wświetlane zaznaczenie jest odzwierciedlen
 
 ### Elementy nieobsługiwane
 
-Emulator nie obsługuje układu Z80ACTC, obsługiwane sa układy przewidziane w konstrukcji bez Z80ACTC łącznie z pozytywką\. Urządzenia zewnętrzne podłączane przez port wejścia/wyjścia inne niż pozytywka nie są obsługiwane\.
+Urządzenia zewnętrzne podłączane przez port wejścia/wyjścia inne niż pozytywka nie są obsługiwane\. Emulacja układu Z80ACTC jest w zakresie niezbędnym do obsługi pozytywki, jednakże symulowana pozytywka jest zawsze w wersji przewidzianej bez układu Z80ACTC \(do CA80 z Z80ACTC przewidziano dwie wersje pozytywki różniące się sposobem generowania dźwięku\)\.
+
+Przewidziane jest jedynie cykliczne wyzwalanie przerwania z kanału 0 układu Z80ACTC\. Pozytywka w wersji z Z80ACTC wyzwala również przerwanie w kanale 1, jednkak nie jest to niezbędne do prawidłowego działania pozytywki w wersji bez układu Z80ACTC, która wydaje dźwiek o czestotliwości zależnej od stanu portu 8255\.
 
 Procesor Z80 ma określony zestaw zdefiniowanych kodów rozkazów\. Teoretycznie możliwe jest utworzenie kodów rozkazów nieistniejących\. Zachowanie się procesora w przypadku napotkania na kod nieznanego rozkazu nie jest zdefiniowane\. Emulator w takiej sytuacji zatrzyma emulację i zostanie wyświetlony komunikat z informacją o napotkaniu nieistniejącego rozkazu z podaniem kodu potencjalnego rozkazu\. Na ogół przyczyną wystąpienia błędu jest błędna wartość jednego z bajtów w kodzie programu lub próba uruchomienia kodu od adresu, w którym nie ma kodu programu, a są dane\.
 
@@ -102,6 +104,10 @@ Na zakładce **Konfiguracja i pułapki**, w sekcji **Klawiatura** można modyfik
 Komputer CA80 co 2 milisekundy \(8000 taktów zegara\) wyzwala przerwanie niemaskowalne w procesorze Z80, a interfejs pozytywki wyzwala przerwanie maskowalne co kilkadziesiąt milisekund, częstotliwość wyzwalania ustawia się potencjometrem\.
 
 Na zakładce **Konfiguracja i pułapki**, liczbę taktów zegara pomiędzy dwoma kolejnymi wyzwoleniami przerwania ustawia się poprzez zmianę wartości pola **Okres NMI \[clk\]** i **Okres INT \[clk\]**, odpowiednio dla przerwania niemaskowalnego i przerwania maskowalnego\. Wprowadzenie innej wartości spowoduje zmiane częstotliwości wywoływania przerwania\. Wpisanie liczby 0 lub liczby ujemnej lub odznaczenie pola **Okres NMI \[clk\]** lub **Okres INT \[clk\]** powoduje wyłączenie przerwania \(nie będzie ono wyzwalane\)\.
+
+### Układ Z80ACTC
+
+Emulator zapewnia częściowa obsługę wyzwalania przerwań poprzez układ Z80ACTC\. Obsługa liczników wyzwalających przerwania same z siebie jest pełna\. Sam CA80 może zawierać, ale nie musi zawierać tego układu\. Obecnośc układu Z80ACTC ustawia się poprzez zanaczenie pola **Okres CTC \[clk\]** w sekcji **Ustawienia emulacji**\. Wartość liczbowa tego pola określa liczbę cykli zegarowych pomiędzy dwoma wyzwoleniami układu z zewnątrz przez kanał 0\. Występowanie i częstotliwość generowania przerwań przez ten układ zależy od jego konfiguracji, którą dokonuje się programowo\.
 
 ### Timer interfejsu emulatora
 
